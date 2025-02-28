@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const Guild = require('../schemas/guildsSchema');
 const { fecthDataBase, updateDataBase, ratelimitFilter } = require('../functions');
 
 module.exports = async (client, oldMessage, newMessage) => {
