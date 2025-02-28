@@ -1,31 +1,68 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('stafflist')
-    .setDescription('Lista todos los miembros del equipo de staff en el servidor.')
+    .setDescription('Muestra la lista completa del equipo staff del servidor')
     .setDMPermission(false),
+    
   async execute(interaction) {
-    const requiredRoleId = '1278189594596348010';
-    const allowedGuildId = '1277353130518122538';
-    if (interaction.guild.id !== allowedGuildId) {
-      return interaction.reply({ content: 'Este comando solo se puede ejecutar en el servidor autorizado.', ephemeral: true });
+    // Configuración personalizable
+    const config = {
+      guildId: '1277353130518122538',       // ID de tu servidor
+      staffRoleId: '1278189594596348010',   // ID del rol staff
+      embedColor: '#2b2d31',                // Color del embed
+      footerIcon: true                      // Mostrar icono del servidor en el footer
+    };
+
+    // Verificar servidor
+    if (interaction.guild.id !== config.guildId) {
+      return interaction.reply({
+        content: '⚠️ Este comando solo está disponible en el servidor oficial',
+        ephemeral: true
+      });
     }
+
     try {
-      const role = interaction.guild.roles.cache.get(requiredRoleId);
-      if (!role) return interaction.reply({ content: 'El rol de staff no fue encontrado en este servidor.', ephemeral: true });
-      const membersWithRole = role.members.map(member => `<@${member.user.id}> (ID: ${member.id})`);
-      if (membersWithRole.length === 0) {
-        return interaction.reply({ content: `No hay miembros del equipo de staff con el rol ${role}.`, ephemeral: true });
+      // Obtener datos actualizados
+      const guild = await interaction.guild.fetch();
+      const role = await guild.roles.fetch(config.staffRoleId);
+      
+      if (!role) {
+        return interaction.reply({
+          content: '❌ No se encontró el rol de staff configurado',
+          ephemeral: true
+        });
       }
+
+      // Actualizar caché de miembros
+      await guild.members.fetch({ withPresences: true });
+      
+      // Procesar miembros
+      const staffMembers = role.members
+        .sort((a, b) => b.roles.highest.position - a.roles.highest.position)
+        .map(member => `• ${member.toString()} - \`${member.user.tag}\` (${member.roles.cache.size - 1} roles)`);
+
+      // Construir embed
       const embed = new EmbedBuilder()
-        .setTitle('<:Members:1278539258692374591> | Miembros del equipo de Staff')
-        .setColor('#00ADEF')
-        .setDescription(membersWithRole.join('\n'))
-        .setFooter({ text: 'Rymbo' });
-      return interaction.reply({ embeds: [embed] });
+        .setTitle(`👥 Equipo Staff - ${staffMembers.length} miembros`)
+        .setColor(config.embedColor)
+        .setDescription(staffMembers.join('\n') || '🚨 No se encontraron miembros staff')
+        .setFooter({
+          text: `Lista actualizada el ${new Date().toLocaleDateString()}`,
+          iconURL: config.footerIcon ? guild.iconURL({ dynamic: true }) : null
+        })
+        .setThumbnail(guild.iconURL({ size: 512 }));
+
+      // Enviar respuesta
+      await interaction.reply({ embeds: [embed] });
+
     } catch (error) {
-      console.error('Error al listar los miembros del staff:', error);
-      return interaction.reply({ content: 'Hubo un error al intentar listar los miembros del staff.', ephemeral: true });
+      console.error('Error en comando stafflist:', error);
+      await interaction.reply({
+        content: '❌ Error al generar la lista de staff',
+        ephemeral: true
+      });
     }
   }
 };
