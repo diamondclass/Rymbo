@@ -1,7 +1,6 @@
 # Rymbo | Un bot Antiraid eficiente para proteger a tu servidor, comunidad o empresa.
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/zHypeado/Rymbo)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -44,4 +43,37 @@ O cualquiera de nuestros colaboradores.
 
    ```bash
    git clone https://github.com/zHypeado/Rymbo.git
-   cd Rymb
+   cd Rymbo
+   ```
+
+# License - Attribution License (NearDevs)
+
+**Ownership:**  
+This repository is owned and maintained by **NearDevs**.
+
+---
+
+## License Terms
+
+**Copyright (c) 2025 NearDevs**
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this repository (the “Software”), to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, **provided that** the following conditions are met:
+
+1. **Attribution Requirement:**  
+   Every copy or substantial portion of the Software **must include proper credit** to **NearDevs** as the original owner.  
+   *Example attribution:*  
+   > "Original repository by NearDevs"  
+   This statement should be clearly displayed in documentation, user interfaces, or any materials where the Software is used or distributed.
+
+2. **Inclusion of Notices:**  
+   The above copyright notice and this permission notice  
+   **must be included in all copies or substantial portions of the Software.**
+
+---
+
+## Disclaimer
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.**  
+In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Software or its use.
+
+---
