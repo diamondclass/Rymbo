@@ -35,7 +35,7 @@ O cualquiera de nuestros colaboradores.
 <p align = "center"><img src = "https://github-widgetbox.vercel.app/api/profile?username=diamondclass&data=followers,repositories,stars,commits"></p>
 <p align = "center"><img src = "https://github-widgetbox.vercel.app/api/profile?username=Not168ms&data=followers,repositories,stars,commits"></p>
 <p align = "center"><img src = "https://github-widgetbox.vercel.app/api/profile?username=developer2025&data=followers,repositories,stars,commits"></p>
-<p align = "center"><img src = "https://github-widgetbox.vercel.app/api/profile?username=TyoudmOriginal&data=followers,repositories,stars,commits"></p>
+<p align = "center"><img src = "https://github-widgetbox.vercel.app/api/profile?username=TyouDmOri&data=followers,repositories,stars,commits"></p>
 
 ## Instalación
 
