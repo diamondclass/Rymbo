@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-
+// bill, pa q pusiste comentarios¿ xd
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('stafflist')
@@ -7,15 +7,13 @@ module.exports = {
     .setDMPermission(false),
     
   async execute(interaction) {
-    // Configuración personalizable
     const config = {
-      guildId: '1277353130518122538',       // ID de tu servidor
-      staffRoleId: '1278189594596348010',   // ID del rol staff
-      embedColor: '#2b2d31',                // Color del embed
-      footerIcon: true                      // Mostrar icono del servidor en el footer
+      guildId: '1277353130518122538',       
+      staffRoleId: '1278189594596348010',   
+      embedColor: '#2b2d31',               
+      footerIcon: true                      
     };
 
-    // Verificar servidor
     if (interaction.guild.id !== config.guildId) {
       return interaction.reply({
         content: '⚠️ Este comando solo está disponible en el servidor oficial',
@@ -24,7 +22,6 @@ module.exports = {
     }
 
     try {
-      // Obtener datos actualizados
       const guild = await interaction.guild.fetch();
       const role = await guild.roles.fetch(config.staffRoleId);
       
@@ -35,15 +32,12 @@ module.exports = {
         });
       }
 
-      // Actualizar caché de miembros
       await guild.members.fetch({ withPresences: true });
       
-      // Procesar miembros
       const staffMembers = role.members
         .sort((a, b) => b.roles.highest.position - a.roles.highest.position)
         .map(member => `• ${member.toString()} - \`${member.user.tag}\` (${member.roles.cache.size - 1} roles)`);
 
-      // Construir embed
       const embed = new EmbedBuilder()
         .setTitle(`👥 Equipo Staff - ${staffMembers.length} miembros`)
         .setColor(config.embedColor)
@@ -54,7 +48,6 @@ module.exports = {
         })
         .setThumbnail(guild.iconURL({ size: 512 }));
 
-      // Enviar respuesta
       await interaction.reply({ embeds: [embed] });
 
     } catch (error) {

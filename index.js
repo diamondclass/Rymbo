@@ -162,7 +162,7 @@ client.login("YOUR BOT TOKEN").then(async () => {
         const slashFiles = fs.readdirSync(`./slash/${folder}`).filter(file => file.endsWith('.js'));
         for (const file of slashFiles) {
             const command = require(`./slash/${folder}/${file}`);
-            client.slashCommands.set(command.name, command);
+            client.slashCommands.set(command.data.name, command);
         }
     }
     console.log(`${colors.success}[SUCCESS]${colors.reset} Loaded slash commands`);
