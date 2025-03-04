@@ -17,6 +17,18 @@ async function isUserBlacklisted(userId) {
     }
 }
 
+function getMemberPrefix(member, prefixes) {
+    let highestPrefix = '';
+    let highestPosition = -1;
+    member.roles.cache.forEach(role => {
+        if (prefixes.has(role.id) && role.position > highestPosition) {
+            highestPrefix = prefixes.get(role.id);
+            highestPosition = role.position;
+        }
+    });
+    return highestPrefix;
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('roleprefix')
@@ -77,7 +89,8 @@ module.exports = {
                 });
 
                 role.members.forEach(member => {
-                    const newName = `${prefix} ${member.user.username}`;
+                    const newPrefix = getMemberPrefix(member, guildPrefix.prefixes);
+                    const newName = newPrefix ? `${newPrefix} ${member.user.username}` : member.user.username;
                     member.setNickname(newName).catch(() => {});
                 });
             } catch (error) {
@@ -105,7 +118,9 @@ module.exports = {
                 });
 
                 role.members.forEach(member => {
-                    member.setNickname(member.user.username).catch(() => {});
+                    const newPrefix = getMemberPrefix(member, guildPrefix.prefixes);
+                    const newName = newPrefix ? `${newPrefix} ${member.user.username}` : member.user.username;
+                    member.setNickname(newName).catch(() => {});
                 });
             } catch (error) {
                 console.error('Error al eliminar el prefijo:', error);
