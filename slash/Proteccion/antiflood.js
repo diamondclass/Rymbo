@@ -6,14 +6,14 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('antiflood')
     .setDescription('Evita muchos mensajes a la vez que inunden un canal.')
-    .addIntegerOption(option => option.setName('maxamountdetect').setDescription('Cantidad máxima para detectar flood').setRequired(false)),
-
+    .addIntegerOption(option =>
+      option.setName('maxamountdetect').setDescription('Cantidad máxima para detectar flood').setRequired(false)
+    ),
   async execute(interaction) {
     const isUserBlacklisted = async (userId) => {
       try {
         const user = await Blacklist.findOne({ userId });
-        if (user && user.removedAt == null) return true;
-        return false;
+        return user && user.removedAt == null;
       } catch (err) {
         return false;
       }
@@ -24,15 +24,19 @@ module.exports = {
     }
 
     const _guild = await interaction.client.getGuildConfig(interaction.guild);
+
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return interaction.reply({ content: 'Necesito el permiso __Administrar mensajes__.', ephemeral: true });
     }
-
     if (interaction.user.id !== interaction.guild.ownerId) {
       return interaction.reply({ content: 'Solo el dueño del servidor puede usar este comando.', ephemeral: true });
     }
 
     const floodAmount = interaction.options.getInteger('maxamountdetect');
+
+    if (!_guild.protection) _guild.protection = {};
+    if (typeof _guild.protection.antiflood === 'undefined') _guild.protection.antiflood = true;
+
     if (floodAmount !== null) {
       _guild.moderation.automoderator.actions.floodDetect = floodAmount;
       await updateDataBase(interaction.client, interaction.guild, _guild, true);

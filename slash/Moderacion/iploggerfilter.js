@@ -30,6 +30,13 @@ module.exports = {
     if (!_guild) {
       return interaction.reply({ content: 'No se pudo cargar la configuración del servidor.', ephemeral: true });
     }
+    if (!_guild.moderation) _guild.moderation = {};
+    if (!_guild.moderation.dataModeration) _guild.moderation.dataModeration = {};
+    if (!_guild.moderation.dataModeration.events) _guild.moderation.dataModeration.events = {};
+    if (typeof _guild.moderation.dataModeration.events.iploggerFilter === 'undefined') {
+      _guild.moderation.dataModeration.events.iploggerFilter = false;
+    }
+    
     if (_guild.moderation.dataModeration.events.iploggerFilter === false) {
       _guild.moderation.dataModeration.events.iploggerFilter = true;
       updateDataBase(interaction.client, interaction.guild, _guild, true);

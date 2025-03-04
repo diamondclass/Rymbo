@@ -17,7 +17,7 @@ module.exports = {
     const promptEmbed = new EmbedBuilder()
       .setColor(0x00ADEF)
       .setDescription('¿Deseas enviar la apelación? Haz clic en el botón de abajo para continuar.');
-    await interaction.reply({ embeds: [promptEmbed], components: [buttonRow], ephemeral: true });
+    await interaction.reply({ embeds: [promptEmbed], components: [buttonRow], ephemeral: false });
     const collector = interaction.channel.createMessageComponentCollector({ filter, componentType: 'BUTTON', time: 15000 });
     collector.on('collect', async i => {
       if (i.customId === 'send_appeal') {
@@ -35,12 +35,12 @@ module.exports = {
     });
     collector.on('end', collected => {
       if (collected.size === 0) {
-        interaction.followUp({ content: 'Tiempo de espera agotado. No se envió la apelación.', ephemeral: true });
+        interaction.followUp({ content: 'Tiempo de espera agotado. No se envió la apelación.', ephemeral: false });
       }
     });
     let userDB = await fecthUsersDataBase(interaction.client, interaction.user);
     if (userDB && userDB.achievements.data.bugs >= 2 && !userDB.achievements.array.includes('Cazador de maliciosos.')) {
-      interaction.followUp({ content: 'Acabas de obtener un logro, mira tu perfil.', ephemeral: true });
+      interaction.followUp({ content: 'Acabas de obtener un logro, mira tu perfil.', ephemeral: false });
       userDB.achievements.array.push('Cazador de maliciosos.');
       userDB.save();
     }

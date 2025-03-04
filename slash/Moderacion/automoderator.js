@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 const { dataRequired, pulk, updateDataBase, fecthDataBase } = require('../../functions');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('automoderator')
@@ -160,13 +161,10 @@ module.exports = {
             .addStringOption(option =>
               option.setName('link')
                 .setDescription('Link o extensión (solo para add o remove)')
-                .setRequired(false))))
-,
+                .setRequired(false)))),
   async execute(interaction) {
-    // Cargar la configuración del servidor desde la base de datos.
     let _guild = await fecthDataBase(interaction.client, interaction.guild, false);
     if (!_guild) return interaction.reply({ content: 'No se pudo cargar la configuración del servidor.', ephemeral: true });
-    // Verificar permisos de Administrador.
     if (!interaction.guild.members.me.permissions.has('ADMINISTRATOR')) {
       return interaction.reply({ content: 'Necesito permiso de Administrador.', ephemeral: true });
     }
@@ -174,11 +172,50 @@ module.exports = {
       return interaction.reply({ content: 'Necesitas permiso de Administrador.', ephemeral: true });
     }
     if (!_guild.moderation.dataModeration.muterole) {
-      return interaction.reply({ content: `Se debe especificar el rol de muteo con **setmuterole <roleMention>**\``, ephemeral: true });
+      return interaction.reply({ content: `Se debe especificar el rol de muteo con **setmuterole <roleMention>**`, ephemeral: true });
     }
+
+    if (!_guild.moderation) _guild.moderation = {};
+    if (!_guild.moderation.dataModeration) {
+      _guild.moderation.dataModeration = {
+        muterole: '',
+        forceReasons: [],
+        timers: [],
+        badwords: [],
+        events: {}
+      };
+    }
+    if (!_guild.moderation.automoderator) {
+      _guild.moderation.automoderator = { enable: false, actions: {}, events: {} };
+    }
+    const defaultAutomodEvents = {
+      badwordDetect: false,
+      floodDetect: false,
+      manyPings: false,
+      capitalLetters: false,
+      manyEmojis: false,
+      manyWords: false,
+      linkDetect: false,
+      ghostping: false,
+      nsfwFilter: false,
+      iploggerFilter: false
+    };
+    for (const key in defaultAutomodEvents) {
+      if (typeof _guild.moderation.automoderator.events[key] === 'undefined') {
+        _guild.moderation.automoderator.events[key] = defaultAutomodEvents[key];
+      }
+    }
+    if (!_guild.moderation.automoderator.actions.warns) _guild.moderation.automoderator.actions.warns = [3, 5];
+    if (!_guild.moderation.automoderator.actions.muteTime) _guild.moderation.automoderator.actions.muteTime = [3600000, '1h'];
+    if (!_guild.moderation.automoderator.actions.action) _guild.moderation.automoderator.actions.action = 'BAN';
+    if (!_guild.moderation.automoderator.actions.linksToIgnore) _guild.moderation.automoderator.actions.linksToIgnore = [];
+    if (!_guild.moderation.automoderator.actions.floodDetect) _guild.moderation.automoderator.actions.floodDetect = 5;
+    if (!_guild.moderation.automoderator.actions.manyEmojis) _guild.moderation.automoderator.actions.manyEmojis = 4;
+    if (!_guild.moderation.automoderator.actions.manyPings) _guild.moderation.automoderator.actions.manyPings = 4;
+    if (!_guild.moderation.automoderator.actions.manyWords) _guild.moderation.automoderator.actions.manyWords = 250;
+
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     if (!subcommandGroup) {
-      // Subcomandos: enable, disable, label.
       const sub = interaction.options.getSubcommand();
       if (sub === 'enable') {
         if (_guild.moderation.automoderator.enable === true)

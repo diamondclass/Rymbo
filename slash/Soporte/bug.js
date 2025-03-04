@@ -20,7 +20,7 @@ module.exports = {
     };
 
     if (await isUserBlacklisted(interaction.user.id)) {
-      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: false });
     }
 
     const bugMsg = interaction.options.getString('mensaje');
@@ -39,7 +39,7 @@ module.exports = {
           .setAuthor({ name: `${interaction.user.tag} (${interaction.user.id})`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
           .setFooter({ text: `${interaction.guild.name} (${interaction.guild.id})`, iconURL: interaction.guild.iconURL() });
 
-        await interaction.followUp({ embeds: [bugEmbed], ephemeral: true });
+        await interaction.followUp({ embeds: [bugEmbed], ephemeral: false });
         interaction.client.channels.cache.get("1277357469076815912").send({ embeds: [bugEmbed] });
         collector.stop();
       } else {
@@ -47,12 +47,5 @@ module.exports = {
         collector.stop();
       }
     });
-
-    let userDB = await fecthUsersDataBase(interaction.client, interaction.user);
-    if (userDB && userDB.achievements.data.bugs >= 2 && !userDB.achievements.array.includes('Cazador de bugs.')) {
-      interaction.channel.send({ content: 'Acabas de obtener un logro, mira tu perfil.' });
-      userDB.achievements.array.push('Cazador de bugs.');
-      userDB.save();
-    }
   }
 };

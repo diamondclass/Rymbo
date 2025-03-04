@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
 const ms = require('ms');
 const { dataRequired, updateDataBase } = require('../../functions');
 const Blacklist = require('../../schemas/blacklist');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('raidmode')
@@ -11,25 +12,30 @@ module.exports = {
     async function isUserBlacklisted(client, userId) {
       try {
         const user = await Blacklist.findOne({ userId });
-        if (user && user.removedAt == null) return true;
-        return false;
+        return user && user.removedAt == null;
       } catch (err) {
         return false;
       }
     }
     const blacklisted = await isUserBlacklisted(interaction.client, interaction.user.id);
     if (blacklisted) return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
-    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.Administrator)) return interaction.reply({ content: 'Necesito permiso de Administrador.', ephemeral: true });
-    if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply({ content: 'Necesitas ser el propietario de este servidor.', ephemeral: true });
+    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.Administrator))
+      return interaction.reply({ content: 'Necesito permiso de Administrador.', ephemeral: true });
+    if (interaction.user.id !== interaction.guild.ownerId)
+      return interaction.reply({ content: 'Necesitas ser el propietario de este servidor.', ephemeral: true });
+
     if (!_guild.protection) _guild.protection = {};
     if (!_guild.protection.raidmode) _guild.protection.raidmode = { enable: false };
     if (!_guild.configuration) _guild.configuration = { prefix: '!' };
+
     if (_guild.protection.raidmode.enable === false) {
       try {
         let password = `${Math.floor(Math.random() * 9999999999)}`;
-        await interaction.user.send({ content: 'Contraseña para desactivar el sistema raidmode: `' + password + '`' }).then(dm => dm.pin()).catch(err => {
-          return interaction.reply({ content: 'Primero abre tus privados.', ephemeral: true });
-        });
+        await interaction.user.send({ content: 'Contraseña para desactivar el sistema raidmode: `' + password + '`' })
+          .then(dm => dm.pin())
+          .catch(err => {
+            return interaction.reply({ content: 'Primero abre tus privados.', ephemeral: true });
+          });
         let timeStr = interaction.options.getString('time') || '30d';
         if (!interaction.options.getString('time')) {
           await interaction.followUp({ content: await dataRequired('Es posible ingresar un tiempo para que el sistema se desactive, por defecto: 30d.\n\n/raidmode [time]'), ephemeral: true });

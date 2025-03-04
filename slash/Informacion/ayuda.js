@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -83,18 +83,37 @@ module.exports = {
         .setPlaceholder('Selecciona una categoría')
         .addOptions(options)
     );
+    
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setLabel('CoreXHosting')
+        .setURL('https://corexhosting.net')
+        .setStyle(ButtonStyle.Link),
+      new ButtonBuilder()
+        .setLabel('Votar en Top.gg')
+        .setURL('https://top.gg/bot/1277124708369961021')
+        .setStyle(ButtonStyle.Link),
+      new ButtonBuilder()
+        .setLabel('Soporte')
+        .setURL('https://discord.gg/a7FqNnHk2m')
+        .setStyle(ButtonStyle.Link)
+    );
+    
     const response = await interaction.reply({ 
       embeds: [embedHelp], 
-      components: [selectMenu],
+      components: [selectMenu, buttons],
       fetchReply: true 
     });
+    
     const filter = i => i.customId === 'categorySelect' && i.user.id === interaction.user.id;
     const collector = response.createMessageComponentCollector({ filter, time: 300000 });
+    
     collector.on('collect', async i => {
       const selectedCategory = i.values[0];
       const newEmbed = createCategoryEmbed(options.find(opt => opt.value === selectedCategory).label);
-      await i.update({ embeds: [newEmbed] });
+      await i.update({ embeds: [newEmbed], components: [selectMenu, buttons] });
     });
+    
     collector.on('end', collected => {
       if (collected.size === 0) {
         interaction.editReply({ components: [] }).catch(() => {});

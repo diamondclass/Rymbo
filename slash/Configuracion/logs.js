@@ -40,6 +40,8 @@ module.exports = {
             return interaction.reply({ content: 'No tienes permisos suficientes para usar este comando.', ephemeral: true });
         }
 
+        if (!_guild.configuration) _guild.configuration = { logs: [] };
+
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === 'enable') {

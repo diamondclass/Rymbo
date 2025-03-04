@@ -20,9 +20,9 @@ module.exports = {
       }
     }
     if (await isUserBlacklisted(interaction.user.id)) {
-      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: false });
     }
-    const reportedUser = interaction.options.getUser('usuario');
+    const reportedUser = interaction.options.getString('id + tag');
     const razon = interaction.options.getString('razon');
     const prueba = interaction.options.getString('prueba');
     const confirmEmbed = new EmbedBuilder()

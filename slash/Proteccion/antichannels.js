@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const { updateDataBase, fecthDataBase } = require('../../functions');
 const Blacklist = require('../../schemas/blacklist');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('antichannels')
@@ -18,18 +19,28 @@ module.exports = {
       }
     }
     const isBlacklisted = await isUserBlacklisted(client, interaction.user.id);
-    if (isBlacklisted) return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+    if (isBlacklisted) 
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+    
     const LANG = {
       activate: "El sistema de anticanales ha sido activado.",
       deactivate: "El sistema de anticanales ha sido desactivado.",
       permissionError: "Necesito permisos para __Banear miembros__.",
       ownerError: "Este comando solo puede ser usado por el propietario del servidor."
     };
+
     const _guild = await client.getGuildConfig(interaction.guild);
-    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) return interaction.reply({ content: LANG.permissionError, ephemeral: true });
-    if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply({ content: LANG.ownerError, ephemeral: true });
+    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers))
+      return interaction.reply({ content: LANG.permissionError, ephemeral: true });
+    if (interaction.user.id !== interaction.guild.ownerId)
+      return interaction.reply({ content: LANG.ownerError, ephemeral: true });
+
+    if (!_guild.protection) _guild.protection = {};
+    if (!_guild.protection.antichannels) _guild.protection.antichannels = { enable: false };
+
     _guild.protection.antichannels.enable = !_guild.protection.antichannels.enable;
     await updateDataBase(client, interaction.guild, _guild, true);
+
     if (_guild.protection.antichannels.enable) {
       interaction.reply({ content: LANG.activate });
     } else {

@@ -16,7 +16,7 @@ module.exports = {
       }
     }
     if (await isUserBlacklisted(interaction.user.id)) {
-      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: false });
     }
     const complaint = interaction.options.getString('mensaje');
     const embed = new EmbedBuilder()
@@ -28,7 +28,7 @@ module.exports = {
       new ButtonBuilder().setCustomId('confirm').setLabel('Confirmar').setStyle(ButtonStyle.Success),
       new ButtonBuilder().setCustomId('cancel').setLabel('Cancelar').setStyle(ButtonStyle.Danger)
     );
-    await interaction.reply({ embeds: [embed], components: [row], ephemeral: true });
+    await interaction.reply({ embeds: [embed], components: [row], ephemeral: false });
     const filter = i => i.user.id === interaction.user.id;
     const collector = interaction.channel.createMessageComponentCollector({ filter, time: 15000 });
     collector.on('collect', async i => {

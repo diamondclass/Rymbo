@@ -47,6 +47,10 @@ module.exports = {
     if (!_guild) {
       return interaction.reply({ content: 'No se pudo cargar la configuración del servidor.', ephemeral: true });
     }
+    if (!_guild.moderation) _guild.moderation = {};
+    if (!_guild.moderation.dataModeration) _guild.moderation.dataModeration = { badwords: [] };
+    if (!_guild.moderation.dataModeration.badwords) _guild.moderation.dataModeration.badwords = [];
+
     const subcommand = interaction.options.getSubcommand();
     if (subcommand === 'add') {
       const word = interaction.options.getString('palabra').toLowerCase();

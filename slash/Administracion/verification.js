@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { updateDataBase } = require('../../functions');
 const Blacklist = require('../../schemas/blacklist');
 
@@ -55,6 +55,10 @@ module.exports = {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       return interaction.reply({ content: 'Necesitas permiso de Administrador.', ephemeral: true });
     }
+    if (!_guild.protection) _guild.protection = {};
+    if (!_guild.protection.verification) _guild.protection.verification = { enable: false, _type: '', channel: '', role: '' };
+    if (!_guild.protection.antitokens) _guild.protection.antitokens = { enable: false, usersEntrities: [], entritiesCount: 0 };
+
     if (_guild.protection.verification.enable) {
       _guild.protection.verification.enable = false;
       if (_guild.protection.verification._type === 'v4') {
@@ -96,7 +100,10 @@ module.exports = {
       await channel.send({ embeds: [verifyEmbed], components: [row] });
       interaction.reply({ content: 'Sistema activado. Se ha enviado el botón de verificación al canal especificado.', ephemeral: false });
     } else if (type === 'v4') {
-      if (!_guild.protection.antitokens.enable) {_guild.protection.antitokens.enable = true;}interaction.reply({ content: 'Sistema activado. Los miembros se verificarán automáticamente mediante antitokens.', ephemeral: false });
+      if (!_guild.protection.antitokens.enable) {
+        _guild.protection.antitokens.enable = true;
+      }
+      interaction.reply({ content: 'Sistema activado. Los miembros se verificarán automáticamente mediante antitokens.', ephemeral: false });
     }
     updateDataBase(interaction.client, interaction.guild, _guild, true);
   }

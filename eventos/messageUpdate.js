@@ -235,6 +235,5 @@ module.exports = async (client, oldMessage, newMessage) => {
 
     if (await ratelimitFilter(newMessage)) {
         _guild = await Guild.findOne({ id: newMessage.guild.id });
-        await cmd.run(client, newMessage, args, _guild);
     }
 };

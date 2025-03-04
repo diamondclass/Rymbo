@@ -30,10 +30,21 @@ module.exports = {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageEmojisAndStickers)) {
       return interaction.reply({ content: 'No tienes permisos para administrar emojis y stickers.', ephemeral: true });
     }
+    
     const _guild = await fecthDataBase(interaction.client, interaction.guild, false);
     if (!_guild) {
       return interaction.reply({ content: 'No se pudo cargar la configuración del servidor.', ephemeral: true });
     }
+
+    if (!_guild.moderation) _guild.moderation = {};
+    if (!_guild.moderation.automoderator) _guild.moderation.automoderator = { actions: {} };
+    if (!_guild.moderation.automoderator.actions) _guild.moderation.automoderator.actions = {};
+    if (!_guild.moderation.dataModeration) _guild.moderation.dataModeration = {};
+    if (!_guild.moderation.dataModeration.events) _guild.moderation.dataModeration.events = {};
+    if (typeof _guild.moderation.dataModeration.events.manyEmojis === 'undefined') {
+      _guild.moderation.dataModeration.events.manyEmojis = false;
+    }
+
     const cantidad = interaction.options.getInteger('cantidad');
     if (cantidad !== null) {
       _guild.moderation.automoderator.actions.manyEmojis = cantidad;

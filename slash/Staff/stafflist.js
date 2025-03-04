@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-// bill, pa q pusiste comentarios¿ xd
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('stafflist')

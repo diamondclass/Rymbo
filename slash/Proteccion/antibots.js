@@ -20,15 +20,24 @@ module.exports = {
     };
 
     const isBlacklisted = await isUserBlacklisted(client, interaction.user.id);
-    if (isBlacklisted) return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+    if (isBlacklisted) 
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
 
     const _guild = await client.getGuildConfig(interaction.guild);
-    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) return interaction.reply({ content: 'Necesito permisos para __Banear miembros__.', ephemeral: true });
-    if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply({ content: 'Solo el dueño del servidor puede ejecutar este comando.', ephemeral: true });
+
+    if (!_guild.protection) _guild.protection = {};
+    if (!_guild.protection.antibots) _guild.protection.antibots = { enable: false, _type: 'all' };
+
+    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) 
+      return interaction.reply({ content: 'Necesito permisos para __Banear miembros__.', ephemeral: true });
+    if (interaction.user.id !== interaction.guild.ownerId) 
+      return interaction.reply({ content: 'Solo el dueño del servidor puede ejecutar este comando.', ephemeral: true });
 
     if (!_guild.protection.antibots.enable) {
       _guild.protection.antibots.enable = true;
-      const embed = new EmbedBuilder().setColor("#00ADEF").setDescription('El sistema antibots ha sido activado.');
+      const embed = new EmbedBuilder()
+        .setColor("#00ADEF")
+        .setDescription('El sistema antibots ha sido activado.');
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('all').setLabel('Todos').setStyle(ButtonStyle.Primary),
         new ButtonBuilder().setCustomId('only_nv').setLabel('Solo no verificados').setStyle(ButtonStyle.Secondary),

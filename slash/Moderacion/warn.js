@@ -99,7 +99,6 @@ module.exports = {
       .setTimestamp();
     await interaction.reply({ embeds: [warnEmbed] });
     
-    // Automoderation actions
     if (_guild.moderation.automoderator.enable === true && targetMember) {
       const thresholds = _guild.moderation.automoderator.actions.warns; 
       if (warnCount === thresholds[0]) {
@@ -120,7 +119,6 @@ module.exports = {
           await interaction.followUp({ content: `No he podido silenciar a ${targetUser.tag}.`, ephemeral: true });
         }
       } else if (warnCount === thresholds[1]) {
-        // Ban the user
         try {
           await targetMember.ban({ reason: reason });
           const banEmbed = new EmbedBuilder()

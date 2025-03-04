@@ -1,9 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { dataRequired, pulk, updateDataBase } = require('../../functions');
 const Blacklist = require('../../schemas/blacklist');
+
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('bebn')
+    .setName('block-entries-by-name')
     .setDescription('Expulsa usuarios con nombres no deseados.')
     .addSubcommand(subcommand =>
       subcommand.setName('add')
@@ -23,18 +24,22 @@ module.exports = {
     async function isUserBlacklisted(client, userId) {
       try {
         const user = await Blacklist.findOne({ userId });
-        if (user && user.removedAt == null) return true;
-        return false;
+        return user && user.removedAt == null;
       } catch (err) {
         return false;
       }
     }
     const blacklisted = await isUserBlacklisted(interaction.client, interaction.user.id);
-    if (blacklisted) return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
-    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) return interaction.reply({ content: 'Necesito el permiso para banear miembros.', ephemeral: true });
-    if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply({ content: 'Solo el propietario del servidor puede utilizar este comando.', ephemeral: true });
+    if (blacklisted)
+      return interaction.reply({ content: 'No puedes usar este comando porque estás en la lista negra.', ephemeral: true });
+    if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers))
+      return interaction.reply({ content: 'Necesito el permiso para banear miembros.', ephemeral: true });
+    if (interaction.user.id !== interaction.guild.ownerId)
+      return interaction.reply({ content: 'Solo el propietario del servidor puede utilizar este comando.', ephemeral: true });
+    
     if (!_guild.protection) _guild.protection = {};
     if (!_guild.protection.bloqEntritiesByName) _guild.protection.bloqEntritiesByName = { names: [] };
+
     const subcommand = interaction.options.getSubcommand();
     if (subcommand === 'add') {
       const name = interaction.options.getString('name').toLowerCase();
@@ -42,9 +47,11 @@ module.exports = {
       updateDataBase(interaction.client, interaction.guild, _guild, true);
       await interaction.reply({ content: `La palabra "${name}" ha sido agregada a la lista de bloqueo.` });
     } else if (subcommand === 'remove') {
-      if (_guild.protection.bloqEntritiesByName.names.length === 0) return interaction.reply({ content: 'La lista de nombres bloqueados está vacía.', ephemeral: true });
+      if (_guild.protection.bloqEntritiesByName.names.length === 0)
+        return interaction.reply({ content: 'La lista de nombres bloqueados está vacía.', ephemeral: true });
       const index = interaction.options.getInteger('index');
-      if (index < 1 || index > _guild.protection.bloqEntritiesByName.names.length) return interaction.reply({ content: 'El número ingresado no corresponde a ningún nombre.', ephemeral: true });
+      if (index < 1 || index > _guild.protection.bloqEntritiesByName.names.length)
+        return interaction.reply({ content: 'El número ingresado no corresponde a ningún nombre.', ephemeral: true });
       const removedName = _guild.protection.bloqEntritiesByName.names[index - 1];
       _guild.protection.bloqEntritiesByName.names = await pulk(_guild.protection.bloqEntritiesByName.names, removedName);
       updateDataBase(interaction.client, interaction.guild, _guild, true);

@@ -23,7 +23,12 @@ module.exports = {
         if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply('Solo el dueño del servidor puede usar este comando.');
         if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return interaction.reply({ content: 'Necesitas permisos de __Administrador__.', ephemeral: true });
 
-        let _guild = await getGuildData(interaction.guild.id); // Asegúrate de tener esta función
+        let _guild = await getGuildData(interaction.guild.id);
+        if (!_guild) return interaction.reply({ content: 'No se pudo cargar la configuración del servidor.', ephemeral: true });
+
+        if (!_guild.configuration) _guild.configuration = { whitelist: [] };
+        if (!_guild.configuration.whitelist) _guild.configuration.whitelist = [];
+        
         let whitelist = _guild.configuration.whitelist;
         let whitelistText = whitelist.length > 0 
             ? whitelist.map(id => id.startsWith('http') ? `URL: ${id}` : `<@${id}> (${id})`).join('\n')
