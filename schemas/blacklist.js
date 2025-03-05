@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const blacklistSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
     userId: { type: String, required: true, unique: true },
     reason: { type: String, required: true },
     proof: { type: String, required: true },
@@ -8,7 +9,7 @@ const blacklistSchema = new mongoose.Schema({
     addedAt: { type: Date, default: Date.now },
     removedAt: { type: Date },
     removalReason: { type: String },
-    removalProof: { type: String },
+    removalProof: { type: String }, 
     removalStaffId: { type: String },
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
