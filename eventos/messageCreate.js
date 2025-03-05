@@ -236,7 +236,7 @@ module.exports = async (client, message) => {
               .setDescription(`Rymbo ${version} es un bot basado en [SPAgency](https://github.com/devEthan6737/SPAgency).
               
   <a:a_secure:953907590004355103> **Un bot __Antiraid__ eficiente para proteger a tu servidor, comunidad o empresa.**
-  <:uo_next:955381240293392445> *Usá r!ayuda para comenzar*
+  <:uo_next:955381240293392445> *Usá /ayuda para comenzar*
               
   <a:a_Filter:953182746182828042> Llevo encendido **${days} días**, **${hours} horas**, **${minutes} minutos** y **${seconds} segundos**, además de que me reinicio seguido para lanzar mis actualizaciones.
               
