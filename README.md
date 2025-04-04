@@ -28,7 +28,7 @@ Puedes apoyarnos buscando errores, haciendo pull requests o incluso hablandonos 
 ---
 
 ## Contactos
-- [Soporte]([https://nodejs.org/](https://discord.gg/a7FqNnHk2m))
+- [Soporte](https://discord.gg/a7FqNnHk2m)
 - [diamondclass](https://x.com/diamondclassdev)
 O cualquiera de nuestros colaboradores.
 
@@ -47,7 +47,7 @@ O cualquiera de nuestros colaboradores.
 **Clona el repositorio:**
 
    ```bash
-   git clone https://github.com/zHypeado/Rymbo.git
+   git clone https://github.com/diamondclass/Rymbo.git
    cd Rymbo
    ```
 
