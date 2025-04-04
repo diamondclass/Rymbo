@@ -13,7 +13,7 @@
     "@discordjs/rest": "^2.4.3",
     "@top-gg/sdk": "^3.1.6",
     "anti-ip-logger": "^1.0.1",
-    "axios": "^1.7.9",
+    "axios": "^1.8.2",
     "bufferutil": "^4.0.9",
     "byte-size": "^9.0.1",
     "cacheger": "^1.1.3",
